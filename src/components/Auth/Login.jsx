@@ -6,20 +6,17 @@ import { ChefHat, Eye, EyeOff } from 'lucide-react';
 
 export const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState('');
-  const { login } = useAuthStore();
+  const { login, loading, error, clearError } = useAuthStore();
   const navigate = useNavigate();
   
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm();
 
   const onSubmit = async (data) => {
-    setError('');
-    const success = await login(data.email, data.password);
+    clearError();
+    const result = await login(data.email, data.password);
     
-    if (success) {
+    if (result.success) {
       navigate('/dashboard');
-    } else {
-      setError('Invalid email or password');
     }
   };
 
@@ -105,10 +102,10 @@ export const Login = () => {
 
             <button
               type="submit"
-              disabled={isSubmitting}
+              disabled={loading}
               className="w-full bg-primary-500 text-white py-3 px-4 rounded-lg hover:bg-primary-600 focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors duration-200 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isSubmitting ? 'Signing in...' : 'Sign in'}
+              {loading ? 'Signing in...' : 'Sign in'}
             </button>
           </form>
 
@@ -138,8 +135,8 @@ export const Login = () => {
 
           <div className="mt-6 text-center">
             <span className="text-gray-600">Don't have an account? </span>
-            <Link to="/register" className="text-primary-600 hover:text-primary-500 font-medium">
-              Sign up
+            <Link to="/register-admin" className="text-primary-600 hover:text-primary-500 font-medium">
+              Register as Admin
             </Link>
           </div>
         </div>

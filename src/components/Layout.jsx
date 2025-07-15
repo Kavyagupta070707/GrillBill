@@ -26,13 +26,13 @@ export const Layout = ({ children }) => {
 
   const navigationItems = [
     { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, roles: ['admin', 'manager', 'cashier', 'kitchen'] },
+    { path: '/staff', label: 'Staff', icon: Users, roles: ['admin'] },
     { path: '/pos', label: 'POS', icon: ShoppingCart, roles: ['admin', 'manager', 'cashier'] },
     { path: '/kitchen', label: 'Kitchen', icon: ChefHat, roles: ['admin', 'manager', 'kitchen'] },
     { path: '/tables', label: 'Tables', icon: Table, roles: ['admin', 'manager', 'cashier'] },
     { path: '/reservations', label: 'Reservations', icon: Calendar, roles: ['admin', 'manager', 'cashier'] },
     { path: '/inventory', label: 'Inventory', icon: Package, roles: ['admin', 'manager'] },
     { path: '/reports', label: 'Reports', icon: BarChart3, roles: ['admin', 'manager'] },
-    { path: '/users', label: 'Users', icon: Users, roles: ['admin'] },
     { path: '/settings', label: 'Settings', icon: Settings, roles: ['admin', 'manager'] },
   ];
 

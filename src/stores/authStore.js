@@ -1,61 +1,127 @@
 import { create } from 'zustand';
+import { authAPI } from '../services/api';
 
-// Mock users for demo
-const mockUsers = [
-  {
-    id: '1',
-    email: 'admin@restaurant.com',
-    name: 'Admin User',
-    role: 'admin',
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: '2',
-    email: 'manager@restaurant.com',
-    name: 'Restaurant Manager',
-    role: 'manager',
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: '3',
-    email: 'cashier@restaurant.com',
-    name: 'Cashier Staff',
-    role: 'cashier',
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: '4',
-    email: 'kitchen@restaurant.com',
-    name: 'Kitchen Staff',
-    role: 'kitchen',
-    createdAt: new Date().toISOString(),
-  },
-];
 
-export const useAuthStore = create((set) => ({
+export const useAuthStore = create((set, get) => ({
   user: null,
-  isAuthenticated: false,
-  login: async (email, password) => {
-    // Mock authentication
-    const user = mockUsers.find(u => u.email === email);
-    if (user) {
-      set({ user, isAuthenticated: true });
-      return true;
+  isAuthenticated: !!localStorage.getItem('token'),
+  loading: false,
+  error: null,
+
+  // Initialize auth state from localStorage
+  initialize: () => {
+    const token = localStorage.getItem('token');
+    const user = localStorage.getItem('user');
+    
+    if (token && user) {
+      try {
+        const parsedUser = JSON.parse(user);
+        set({ user: parsedUser, isAuthenticated: true });
+      } catch (error) {
+        console.error('Error parsing user from localStorage:', error);
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+      }
     }
-    return false;
   },
+
+  // Validate product key
+  validateProductKey: async (productKey) => {
+    set({ loading: true, error: null });
+    try {
+      const response = await authAPI.validateProductKey(productKey);
+      set({ loading: false });
+      return { success: true, message: response.data.message };
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || 'Product key validation failed';
+      set({ loading: false, error: errorMessage });
+      return { success: false, message: errorMessage };
+    }
+  },
+
+  // Register admin
+  registerAdmin: async (userData) => {
+    set({ loading: true, error: null });
+    try {
+      const response = await authAPI.registerAdmin(userData);
+      const { token, user } = response.data;
+      
+      localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify(user));
+      
+      set({ user, isAuthenticated: true, loading: false });
+      return { success: true };
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || 'Registration failed';
+      set({ loading: false, error: errorMessage });
+      return { success: false, message: errorMessage };
+    }
+  },
+
+  // Login
+  login: async (email, password) => {
+    set({ loading: true, error: null });
+    try {
+      const response = await authAPI.login(email, password);
+      const { token, user } = response.data;
+      
+      localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify(user));
+      
+      set({ user, isAuthenticated: true, loading: false });
+      return { success: true };
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || 'Login failed';
+      set({ loading: false, error: errorMessage });
+      return { success: false, message: errorMessage };
+    }
+  },
+
+  // Logout
   logout: () => {
-    set({ user: null, isAuthenticated: false });
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    set({ user: null, isAuthenticated: false, error: null });
   },
-  register: async (userData) => {
-    // Mock registration
-    const newUser = {
-      ...userData,
-      id: Math.random().toString(36).substr(2, 9),
-      createdAt: new Date().toISOString(),
-    };
-    mockUsers.push(newUser);
-    set({ user: newUser, isAuthenticated: true });
-    return true;
+
+  // Get current user
+  getCurrentUser: async () => {
+    set({ loading: true, error: null });
+    try {
+      const response = await authAPI.getMe();
+      const user = response.data.user;
+      
+      localStorage.setItem('user', JSON.stringify(user));
+      set({ user, loading: false });
+      return { success: true };
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || 'Failed to get user data';
+      set({ loading: false, error: errorMessage });
+      return { success: false, message: errorMessage };
+    }
+  },
+
+  // Update password
+  updatePassword: async (currentPassword, newPassword) => {
+    set({ loading: true, error: null });
+    try {
+      const response = await authAPI.updatePassword(currentPassword, newPassword);
+      const { token, user } = response.data;
+      
+      localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify(user));
+      
+      set({ user, loading: false });
+      return { success: true, message: 'Password updated successfully' };
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || 'Password update failed';
+      set({ loading: false, error: errorMessage });
+      return { success: false, message: errorMessage };
+    }
+  },
+
+  // Clear error
+  clearError: () => {
+    set({ error: null });
   },
 }));

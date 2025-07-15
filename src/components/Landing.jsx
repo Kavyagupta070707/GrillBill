@@ -128,7 +128,7 @@ export const Landing = () => {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               
                 <Link
-                to="/register"
+                to="/register-admin"
                 className="border-2 border-primary-500 text-primary-500 px-8 py-4 rounded-lg hover:bg-primary-500 hover:text-white transition-all duration-200 font-semibold text-lg"              >
                 Get Started
               </Link>
@@ -304,7 +304,7 @@ export const Landing = () => {
             their operations and increase profits.
           </p>
           <Link
-            to="/register"
+            to="/register-admin"
             className="bg-white text-primary-500 px-8 py-4 rounded-lg hover:bg-gray-100 transition-colors duration-200 font-semibold text-lg inline-flex items-center group"
           >
             Start Your Free Trial

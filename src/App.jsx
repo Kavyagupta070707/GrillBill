@@ -1,10 +1,12 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { useEffect } from 'react';
 import { useAuthStore } from './stores/authStore';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { Layout } from './components/Layout';
 import { Landing } from './components/Landing';
 import { Login } from './components/Auth/Login';
-import { Register } from './components/Auth/Register';
+import { AdminRegister } from './components/Auth/AdminRegister';
+import { StaffManagement } from './components/StaffManagement';
 import { Dashboard } from './components/Dashboard';
 import { POS } from './components/POS';
 import { Kitchen } from './components/Kitchen';
@@ -16,7 +18,11 @@ import { Users } from './components/Users';
 import { Settings } from './components/Settings';
 
 function App() {
-  const { isAuthenticated } = useAuthStore();
+  const { isAuthenticated, initialize } = useAuthStore();
+
+  useEffect(() => {
+    initialize();
+  }, [initialize]);
 
   return (
     <Router>
@@ -24,7 +30,7 @@ function App() {
         {/* Public Routes */}
         <Route path="/" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Landing />} />
         <Route path="/login" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Login />} />
-        <Route path="/register" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Register />} />
+        <Route path="/register-admin" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <AdminRegister />} />
 
         {/* Protected Routes */}
         <Route
@@ -33,6 +39,17 @@ function App() {
             <ProtectedRoute>
               <Layout>
                 <Dashboard />
+              </Layout>
+            </ProtectedRoute>
+          }
+        />
+        
+        <Route
+          path="/staff"
+          element={
+            <ProtectedRoute allowedRoles={['admin']}>
+              <Layout>
+                <StaffManagement />
               </Layout>
             </ProtectedRoute>
           }
