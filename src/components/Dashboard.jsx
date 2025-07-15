@@ -11,7 +11,7 @@ import {
   Star
 } from 'lucide-react';
 import { format } from 'date-fns';
-
+import { Link } from 'react-router-dom';
 export const Dashboard = () => {
   const { user } = useAuthStore();
   const { orders, inventory } = usePOSStore();
@@ -185,18 +185,19 @@ export const Dashboard = () => {
         <div className="bg-white rounded-2xl p-6 shadow-sm">
           <h2 className="text-xl font-semibold text-gray-900 mb-6">Quick Actions</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <button className="flex items-center justify-center p-4 bg-primary-50 hover:bg-primary-100 text-primary-600 rounded-xl transition-colors duration-200">
+            <Link to={"/pos"} className="flex items-center justify-center p-4 bg-primary-50 hover:bg-primary-100 text-primary-600 rounded-xl transition-colors duration-200"><button >
               <ShoppingCart className="w-5 h-5 mr-2" />
               Start New Order
-            </button>
-            <button className="flex items-center justify-center p-4 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-xl transition-colors duration-200">
+            </button></Link>
+            <Link to={"/inventory"} className="flex items-center justify-center p-4 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-xl transition-colors duration-200"><button >
               <Package className="w-5 h-5 mr-2" />
               Check Inventory
-            </button>
-            <button className="flex items-center justify-center p-4 bg-green-50 hover:bg-green-100 text-green-600 rounded-xl transition-colors duration-200">
+            </button></Link>
+             <Link to={"/reports"} className="flex items-center justify-center p-4 bg-green-50 hover:bg-green-100 text-green-600 rounded-xl transition-colors duration-200"><button >
               <TrendingUp className="w-5 h-5 mr-2" />
-              View Reports
-            </button>
+             View Reports
+              
+            </button></Link>
           </div>
         </div>
       )}
