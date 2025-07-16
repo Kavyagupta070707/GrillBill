@@ -8,6 +8,23 @@ const registerStaff = async (req, res) => {
   try {
     const { name, email, password, role, phone, address, salary } = req.body;
 
+    // Validate required fields
+    if (!name || !email || !password || !role) {
+      return res.status(400).json({
+        success: false,
+        message: 'Name, email, password, and role are required.'
+      });
+    }
+
+    // Validate role
+    const allowedRoles = ['manager', 'kitchen', 'waiter', 'cashier', 'cleaner'];
+    if (!allowedRoles.includes(role)) {
+      return res.status(400).json({
+        success: false,
+        message: `Role must be one of: ${allowedRoles.join(', ')}`
+      });
+    }
+
     // Get admin's restaurant
     const restaurant = await Restaurant.findOne({ adminId: req.user._id });
     if (!restaurant) {
@@ -25,6 +42,7 @@ const registerStaff = async (req, res) => {
         message: 'User already exists with this email'
       });
     }
+
 
     // Create staff member
     const staff = await User.create({
@@ -55,7 +73,7 @@ const registerStaff = async (req, res) => {
     console.error('Staff registration error:', error);
     res.status(500).json({
       success: false,
-      message: 'Server error during staff registration'
+      message: process.env.NODE_ENV === 'development' ? error.message : 'Server error during staff registration'
     });
   }
 };

@@ -72,9 +72,14 @@ export const StaffManagement = () => {
     e.preventDefault();
     clearError();
 
+    if (!formData.salary || isNaN(parseFloat(formData.salary)) || parseFloat(formData.salary) <= 0) {
+      clearError();
+      alert('Salary is required and must be a positive number.');
+      return;
+    }
     const staffData = {
       ...formData,
-      salary: formData.salary ? parseFloat(formData.salary) : undefined
+      salary: parseFloat(formData.salary)
     };
 
     let result;
@@ -440,12 +445,12 @@ export const StaffManagement = () => {
                   <option value="">Select Role</option>
                   <option value="manager">Manager</option>
                   <option value="cashier">Cashier</option>
-                  <option value="kitchen">Kitchen Staff</option>
+                  <option value="kitchen">Kitchen</option>
                 </select>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Phone (Optional)</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
                 <input
                   type="tel"
                   value={formData.phone}
@@ -465,11 +470,11 @@ export const StaffManagement = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Annual Salary (Optional)</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Annual Salary <span className="text-red-500">*</span></label>
                 <input
                   type="number"
-                  min="0"
-                  step="1000"
+                  min="1"
+                  required
                   value={formData.salary}
                   onChange={(e) => setFormData({ ...formData, salary: e.target.value })}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
