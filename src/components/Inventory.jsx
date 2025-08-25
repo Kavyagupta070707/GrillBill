@@ -39,7 +39,7 @@ export const Inventory = () => {
  
   const loadInventory = async () => {
     const items = await db.getAll('inventory');
-     console.log('Loaded Inventory:', items);
+    
     setInventory(items);
   };
 

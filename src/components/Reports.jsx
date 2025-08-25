@@ -329,7 +329,7 @@ useEffect(() => {
                       <p className="text-sm text-gray-600">{item.quantity} sold</p>
                     </div>
                   </div>
-                  <p className="font-semibold text-gray-900">${item.revenue.toFixed(2)}</p>
+                  <p className="font-semibold text-gray-900">₹{item.revenue.toFixed(2)}</p>
                 </div>
               ))}
             </div>
@@ -379,7 +379,7 @@ useEffect(() => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">Total Value</p>
-                  <p className="text-2xl font-bold text-green-600">${(inventoryData.totalValue||0).toFixed(2)}</p>
+                  <p className="text-2xl font-bold text-green-600">₹{(inventoryData.totalValue||0).toFixed(2)}</p>
                 </div>
                 <DollarSign className="w-8 h-8 text-green-500" />
               </div>
